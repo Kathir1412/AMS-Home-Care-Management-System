@@ -4,47 +4,47 @@
     Layout = "_Layout";
 }
 
-<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-    <div class="card border-0 shadow-lg" style="width: 100%; max-width: 420px; border-radius: 16px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
+<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+    <div class="card border-0 shadow-lg" style="width: 100%; max-width: 420px; border-radius: 16px; background: #ffffff; border: 1px solid #bae6fd;">
         <div class="card-body p-5">
             <div class="text-center mb-4">
-                <h2 class="fw-bold text-white mb-1">AMS Home Care</h2>
-                <p class="text-white-50">Attendance Management System</p>
+                <h2 class="fw-bold text-primary mb-1"><i class="fa-solid fa-house-medical me-2"></i>AMS Home Care</h2>
+                <p class="text-muted">Attendance Management System</p>
             </div>
             
             <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 
                 <div class="mb-3">
-                    <label asp-for="Email" class="form-label text-white-50 fw-semibold">Email Address</label>
+                    <label asp-for="Email" class="form-label text-secondary fw-semibold">Email Address</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-secondary text-white-50"><i class="fa-solid fa-envelope"></i></span>
-                        <input asp-for="Email" class="form-control bg-transparent text-white border-secondary" placeholder="name@amshomecare.com" style="color-scheme: dark;" />
+                        <span class="input-group-text bg-light border-info text-primary"><i class="fa-solid fa-envelope"></i></span>
+                        <input asp-for="Email" class="form-control border-info" placeholder="name@amshomecare.com" style="color: #1e293b;" />
                     </div>
                     <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
                 
                 <div class="mb-4">
-                    <label asp-for="Password" class="form-label text-white-50 fw-semibold">Password</label>
+                    <label asp-for="Password" class="form-label text-secondary fw-semibold">Password</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-secondary text-white-50"><i class="fa-solid fa-lock"></i></span>
-                        <input asp-for="Password" class="form-control bg-transparent text-white border-secondary" placeholder="••••••••" style="color-scheme: dark;" />
+                        <span class="input-group-text bg-light border-info text-primary"><i class="fa-solid fa-lock"></i></span>
+                        <input asp-for="Password" class="form-control border-info" placeholder="••••••••" style="color: #1e293b;" />
                     </div>
                     <span asp-validation-for="Password" class="text-danger small"></span>
                 </div>
                 
                 <div class="mb-4 form-check">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label text-white-50">Remember Me</label>
+                    <input asp-for="RememberMe" class="form-check-input border-info" />
+                    <label asp-for="RememberMe" class="form-check-label text-secondary">Remember Me</label>
                 </div>
                 
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" style="background: #38bdf8; border-color: #38bdf8; color: #0f172a;">
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" style="background: #0284c7; border-color: #0284c7; color: #ffffff;">
                     <i class="fa-solid fa-right-to-bracket me-2"></i> Log In
                 </button>
             </form>
             
             <div class="text-center mt-4">
-                <p class="text-white-50 small mb-0">Use <strong>admin@amshomecare.com</strong> / <strong>Admin@123</strong> to log in.</p>
+                <p class="text-muted small mb-0">Use <strong>admin@amshomecare.com</strong> / <strong>Admin@123</strong> to log in.</p>
             </div>
         </div>
     </div>
