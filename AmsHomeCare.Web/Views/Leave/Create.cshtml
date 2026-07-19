@@ -1,0 +1,69 @@
+@model AmsHomeCare.Core.Entities.Leave
+@using AmsHomeCare.Core.Enums
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Leaves</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Apply</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">Apply Leave Request</h2>
+        <p class="text-muted">Submit a leave application for an employee.</p>
+    </div>
+</div>
+
+<div class="card card-main" style="max-width: 600px;">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="EmployeeId" class="form-label fw-semibold">Select Employee</label>
+                <select asp-for="EmployeeId" class="form-select" asp-items="ViewBag.Employees">
+                    <option value="">-- Select Employee --</option>
+                </select>
+                <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LeaveType" class="form-label fw-semibold">Leave Type</label>
+                <select asp-for="LeaveType" class="form-select" asp-items="Html.GetEnumSelectList<LeaveType>()">
+                    <option value="">-- Select Leave Type --</option>
+                </select>
+                <span asp-validation-for="LeaveType" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <label asp-for="StartDate" class="form-label fw-semibold">Start Date</label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+                <div class="col-6">
+                    <label asp-for="EndDate" class="form-label fw-semibold">End Date</label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Remarks" class="form-label fw-semibold">Remarks / Reason for Leave</label>
+                <textarea asp-for="Remarks" class="form-control" rows="3" placeholder="State reason clearly..."></textarea>
+                <span asp-validation-for="Remarks" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fa-solid fa-paper-plane me-2"></i> Submit Request
+                </button>
+                <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

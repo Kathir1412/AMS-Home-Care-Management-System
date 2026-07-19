@@ -1,0 +1,65 @@
+@model AmsHomeCare.Core.Entities.Shift
+@{
+    ViewData["Title"] = "Configure Shift";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Shifts</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Configure</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">Configure Shift</h2>
+        <p class="text-muted">Define timing and off days for assignments.</p>
+    </div>
+</div>
+
+<div class="card card-main" style="max-width: 600px;">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="ShiftName" class="form-label fw-semibold">Shift Name</label>
+                <input asp-for="ShiftName" class="form-control" placeholder="e.g. Morning Shift, Custom Evening" />
+                <span asp-validation-for="ShiftName" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <label asp-for="StartTime" class="form-label fw-semibold">Start Time (24h)</label>
+                    <input asp-for="StartTime" type="time" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger small"></span>
+                </div>
+                <div class="col-6">
+                    <label asp-for="EndTime" class="form-label fw-semibold">End Time (24h)</label>
+                    <input asp-for="EndTime" type="time" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="WeeklyOffDay" class="form-label fw-semibold">Weekly Off Day</label>
+                <select asp-for="WeeklyOffDay" class="form-select" asp-items="Html.GetEnumSelectList<DayOfWeek>()">
+                    <option value="">-- No Fixed Off Day --</option>
+                </select>
+                <span asp-validation-for="WeeklyOffDay" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4 form-check">
+                <input asp-for="IsCustom" class="form-check-input" />
+                <label asp-for="IsCustom" class="form-check-label fw-semibold">Is Custom/Ad-hoc Shift?</label>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Save Shift
+                </button>
+                <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

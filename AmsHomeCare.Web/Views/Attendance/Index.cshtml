@@ -1,0 +1,117 @@
+@model IEnumerable<AmsHomeCare.Core.Entities.Attendance>
+@{
+    ViewData["Title"] = "Attendance History";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Attendance History</h2>
+            <p class="text-muted">Review, filter, and modify staff attendance logs.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="DailySheet" class="btn btn-primary">
+                <i class="fa-solid fa-clipboard-user me-2"></i> Mark Daily Attendance
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card card-main mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-12 col-md-4">
+                <label class="form-label fw-semibold">Select Month</label>
+                <input type="month" name="month" class="form-control" value="@ViewBag.SelectedMonth" />
+            </div>
+            <div class="col-12 col-md-3">
+                <button type="submit" class="btn btn-light border w-100">
+                    <i class="fa-solid fa-filter me-2"></i> Filter Logs
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card card-main">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="attendanceTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Status</th>
+                        <th>In Time</th>
+                        <th>Out Time</th>
+                        <th>Overtime (Hrs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td><span class="fw-semibold">@log.Date.ToString("dd-MMM-yyyy")</span></td>
+                            <td><span class="fw-bold">@log.Employee?.EmployeeCode</span></td>
+                            <td>@log.Employee?.Name</td>
+                            <td>
+                                @if (log.Status == AmsHomeCare.Core.Enums.AttendanceStatus.Present)
+                                {
+                                    <span class="badge badge-present">Present</span>
+                                }
+                                else if (log.Status == AmsHomeCare.Core.Enums.AttendanceStatus.Absent)
+                                {
+                                    <span class="badge badge-absent">Absent</span>
+                                }
+                                else if (log.Status == AmsHomeCare.Core.Enums.AttendanceStatus.HalfDay)
+                                {
+                                    <span class="badge badge-halfday">Half Day</span>
+                                }
+                                else if (log.Status == AmsHomeCare.Core.Enums.AttendanceStatus.Leave)
+                                {
+                                    <span class="badge badge-leave">On Leave</span>
+                                }
+                            </td>
+                            <td>@(log.InTime.HasValue ? log.InTime.Value.ToString(@"hh\:mm") : "-")</td>
+                            <td>@(log.OutTime.HasValue ? log.OutTime.Value.ToString(@"hh\:mm") : "-")</td>
+                            <td>
+                                @if (log.OvertimeHours > 0)
+                                {
+                                    <span class="text-success fw-bold">+@log.OvertimeHours.ToString("0.##")</span>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#attendanceTable').DataTable({
+                responsive: true,
+                order: [[0, 'desc']], // Order by Date
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search logs..."
+                }
+            });
+        });
+    </script>
+}

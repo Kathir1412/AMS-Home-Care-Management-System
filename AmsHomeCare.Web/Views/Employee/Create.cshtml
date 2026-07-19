@@ -1,0 +1,125 @@
+@model AmsHomeCare.Web.Models.EmployeeViewModel
+@using AmsHomeCare.Core.Enums
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Employees</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add New</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">Add New Employee</h2>
+        <p class="text-muted">Register a new team member and configure their role.</p>
+    </div>
+</div>
+
+<div class="card card-main">
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="fw-bold text-primary mb-4 pb-2 border-bottom"><i class="fa-solid fa-user me-2"></i> Personal Details</h5>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Name" class="form-label fw-semibold"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Full Name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Gender" class="form-label fw-semibold"></label>
+                    <select asp-for="Gender" class="form-select" asp-items="Html.GetEnumSelectList<Gender>()">
+                        <option value="">-- Select Gender --</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="DateOfBirth" class="form-label fw-semibold"></label>
+                    <input asp-for="DateOfBirth" class="form-control" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="MobileNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="MobileNumber" class="form-control" placeholder="10-digit number" />
+                    <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Email" class="form-label fw-semibold"></label>
+                    <input asp-for="Email" class="form-control" type="email" placeholder="name@amshomecare.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="AadhaarNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="AadhaarNumber" class="form-control" placeholder="12-digit number" />
+                    <span asp-validation-for="AadhaarNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-8">
+                    <label asp-for="Address" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Address" class="form-control" rows="2" placeholder="Full residential address"></textarea>
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label asp-for="PhotoFile" class="form-label fw-semibold"></label>
+                    <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" />
+                    <span asp-validation-for="PhotoFile" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-primary mb-4 pb-2 border-bottom"><i class="fa-solid fa-briefcase me-2"></i> Professional Details</h5>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Role" class="form-label fw-semibold"></label>
+                    <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<EmployeeRole>()">
+                        <option value="">-- Select Role --</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Qualification" class="form-label fw-semibold"></label>
+                    <input asp-for="Qualification" class="form-control" placeholder="e.g. GNM Nurse, DPT, Caretaker Course" />
+                    <span asp-validation-for="Qualification" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Experience" class="form-label fw-semibold"></label>
+                    <input asp-for="Experience" class="form-control" placeholder="Experience in years" />
+                    <span asp-validation-for="Experience" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="JoiningDate" class="form-label fw-semibold"></label>
+                    <input asp-for="JoiningDate" class="form-control" />
+                    <span asp-validation-for="JoiningDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Status" class="form-label fw-semibold"></label>
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<EmployeeStatus>()">
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Save Details
+                </button>
+                <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

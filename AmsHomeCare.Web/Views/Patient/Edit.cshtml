@@ -1,0 +1,113 @@
+@model AmsHomeCare.Core.Entities.Patient
+@using AmsHomeCare.Core.Enums
+@{
+    ViewData["Title"] = "Edit Patient";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Patients</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Patient</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">Edit Patient Details</h2>
+        <p class="text-muted">Modify registration details or assignments for: <strong>@Model.PatientName</strong></p>
+    </div>
+</div>
+
+<div class="card card-main">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="fw-bold text-primary mb-4 pb-2 border-bottom"><i class="fa-solid fa-hospital-user me-2"></i> Patient Information</h5>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="PatientName" class="form-label fw-semibold">Patient Name</label>
+                    <input asp-for="PatientName" class="form-control" />
+                    <span asp-validation-for="PatientName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Age" class="form-label fw-semibold"></label>
+                    <input asp-for="Age" class="form-control" type="number" />
+                    <span asp-validation-for="Age" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="Gender" class="form-label fw-semibold"></label>
+                    <select asp-for="Gender" class="form-select" asp-items="Html.GetEnumSelectList<Gender>()">
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="MobileNumber" class="form-label fw-semibold">Mobile Number</label>
+                    <input asp-for="MobileNumber" class="form-control" />
+                    <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="EmergencyContact" class="form-label fw-semibold">Emergency Contact Number</label>
+                    <input asp-for="EmergencyContact" class="form-control" />
+                    <span asp-validation-for="EmergencyContact" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-12">
+                    <label asp-for="Address" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-primary mb-4 pb-2 border-bottom"><i class="fa-solid fa-notes-medical me-2"></i> Service & Assignment Details</h5>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="ServiceType" class="form-label fw-semibold">Service Type Required</label>
+                    <select asp-for="ServiceType" class="form-select" asp-items="Html.GetEnumSelectList<ServiceType>()">
+                    </select>
+                    <span asp-validation-for="ServiceType" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="AssignedEmployeeId" class="form-label fw-semibold">Primary Caregiver</label>
+                    <select asp-for="AssignedEmployeeId" class="form-select" asp-items="ViewBag.Employees">
+                        <option value="">-- Leave Unassigned --</option>
+                    </select>
+                    <span asp-validation-for="AssignedEmployeeId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="StartDate" class="form-label fw-semibold">Care Start Date</label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="EndDate" class="form-label fw-semibold">Care End Date (Optional)</label>
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 col-md-8">
+                    <label asp-for="MedicalCondition" class="form-label fw-semibold">Medical Condition / Diagnosis</label>
+                    <textarea asp-for="MedicalCondition" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="MedicalCondition" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Update Details
+                </button>
+                <a asp-action="Index" class="btn btn-light border px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

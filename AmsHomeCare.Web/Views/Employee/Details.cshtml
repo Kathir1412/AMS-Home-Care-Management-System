@@ -1,0 +1,127 @@
+@model AmsHomeCare.Core.Entities.Employee
+@{
+    ViewData["Title"] = "Employee Details";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Employees</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Employee Details</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark mb-1">Employee Profile</h2>
+        <p class="text-muted">Detailed background and registration details of the employee.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Summary Card -->
+    <div class="col-12 col-lg-4">
+        <div class="card card-main text-center p-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    @if (!string.IsNullOrEmpty(Model.PhotoPath))
+                    {
+                        <img src="@Model.PhotoPath" alt="Photo" class="rounded-circle shadow" style="width: 140px; height: 140px; object-fit: cover; border: 4px solid #f1f5f9;" />
+                    }
+                    else
+                    {
+                        <img src="https://ui-avatars.com/api/?name=@Model.Name&background=e0f2fe&color=0369a1&size=140" alt="Avatar" class="rounded-circle shadow-sm" style="border: 4px solid #f1f5f9;" />
+                    }
+                </div>
+                <h4 class="fw-bold text-dark mb-1">@Model.Name</h4>
+                <div class="mb-3">
+                    <span class="badge bg-primary px-3 py-2 fw-semibold">@Model.Role</span>
+                </div>
+                
+                <hr class="my-4 text-muted">
+                
+                <div class="row text-start g-3">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Employee Code</small>
+                        <span class="fw-bold text-dark">@Model.EmployeeCode</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Status</small>
+                        @if (Model.Status == AmsHomeCare.Core.Enums.EmployeeStatus.Active)
+                        {
+                            <span class="badge badge-active">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-inactive">Inactive</span>
+                        }
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Joining Date</small>
+                        <span class="fw-semibold text-dark">@Model.JoiningDate.ToString("dd-MMM-yyyy")</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Experience</small>
+                        <span class="fw-semibold text-dark">@Model.Experience Years</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Edit Profile
+                    </a>
+                    <a asp-action="Index" class="btn btn-light border">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Back to Directory
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Full Details -->
+    <div class="col-12 col-lg-8">
+        <div class="card card-main h-100">
+            <div class="card-header">
+                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-address-card text-primary me-2"></i>Full Information Details</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle" style="font-size: 0.95rem;">
+                        <tbody>
+                            <tr>
+                                <th class="py-3 ps-4" style="width: 30%;">Full Name</th>
+                                <td class="py-3">@Model.Name</td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Gender</th>
+                                <td class="py-3">@Model.Gender</td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Date of Birth</th>
+                                <td class="py-3">@Model.DateOfBirth.ToString("dd-MMMM-yyyy") (@(DateTime.Today.Year - Model.DateOfBirth.Year) Years Old)</td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Mobile Number</th>
+                                <td class="py-3"><a href="tel:@Model.MobileNumber" class="text-decoration-none">@Model.MobileNumber</a></td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Email Address</th>
+                                <td class="py-3"><a href="mailto:@Model.Email" class="text-decoration-none">@Model.Email</a></td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Aadhaar Card Number</th>
+                                <td class="py-3">@Model.AadhaarNumber</td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Highest Qualification</th>
+                                <td class="py-3">@Model.Qualification</td>
+                            </tr>
+                            <tr>
+                                <th class="py-3 ps-4">Residential Address</th>
+                                <td class="py-3">@Model.Address</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

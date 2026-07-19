@@ -1,0 +1,235 @@
+@model AmsHomeCare.Core.Entities.Holiday
+@{
+    ViewData["Title"] = "System Settings";
+    var holidays = ViewBag.Holidays as IEnumerable<AmsHomeCare.Core.Entities.Holiday>;
+    var users = ViewBag.Users as IEnumerable<AmsHomeCare.Infrastructure.Identity.ApplicationUser>;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-dark mb-1">System Settings</h2>
+        <p class="text-muted">Manage company details, holiday calendar and user accounts.</p>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card card-main">
+    <div class="card-header p-0">
+        <ul class="nav nav-tabs border-bottom-0" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active py-3 px-4 fw-semibold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                    <i class="fa-solid fa-building me-2"></i> Company Profile
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 px-4 fw-semibold" id="holiday-tab" data-bs-toggle="tab" data-bs-target="#holiday" type="button" role="tab" aria-controls="holiday" aria-selected="false">
+                    <i class="fa-solid fa-umbrella-beach me-2"></i> Holiday Master
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 px-4 fw-semibold" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="false">
+                    <i class="fa-solid fa-user-lock me-2"></i> User Management
+                </button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="card-body">
+        <div class="tab-content" id="settingsTabsContent">
+            <!-- Company Profile Tab -->
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <form asp-action="UpdateCompanyProfile" method="post" style="max-width: 600px;">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Company Name</label>
+                        <input name="companyName" class="form-control" value="@ViewBag.CompanyName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Company Email Address</label>
+                        <input name="companyEmail" type="email" class="form-control" value="@ViewBag.CompanyEmail" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Company Phone Number</label>
+                        <input name="companyPhone" class="form-control" value="@ViewBag.CompanyPhone" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Company Address</label>
+                        <textarea name="companyAddress" class="form-control" rows="3" required>@ViewBag.CompanyAddress</textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary px-4 mt-2">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Profile Details
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Holiday Master Tab -->
+            <div class="tab-pane fade" id="holiday" role="tabpanel" aria-labelledby="holiday-tab">
+                <div class="row g-4">
+                    <div class="col-12 col-md-5">
+                        <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-circle-plus me-1"></i> Add Holiday</h5>
+                        <form asp-action="CreateHoliday" method="post" class="p-3 border rounded bg-light">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label fw-semibold">Holiday Name</label>
+                                <input asp-for="Name" class="form-control" placeholder="e.g. Diwali" required />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Date" class="form-label fw-semibold">Holiday Date</label>
+                                <input asp-for="Date" type="date" class="form-control" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fa-solid fa-plus me-1"></i> Add to Calendar
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="col-12 col-md-7">
+                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-calendar-check me-1"></i> Scheduled Holidays</h5>
+                        @if (holidays != null && holidays.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Holiday Name</th>
+                                            <th>Date</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var h in holidays)
+                                        {
+                                            <tr>
+                                                <td class="fw-semibold text-dark">@h.Name</td>
+                                                <td>@h.Date.ToString("dd-MMMM-yyyy")</td>
+                                                <td class="text-end">
+                                                    <form asp-action="DeleteHoliday" asp-route-id="@h.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this holiday?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="fa-solid fa-trash-can"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No holidays registered in the calendar.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Tab -->
+            <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-users me-1"></i> Active User Accounts</h5>
+                @if (users != null && users.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>User Profile</th>
+                                    <th>Email ID</th>
+                                    <th>Username</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var u in users)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-semibold text-dark me-2">@u.FullName</div>
+                                            </div>
+                                        </td>
+                                        <td>@u.Email</td>
+                                        <td><span class="badge bg-secondary">@u.UserName</span></td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-sm btn-outline-warning btn-reset-pwd" 
+                                                    data-bs-toggle="modal" data-bs-target="#resetPwdModal"
+                                                    data-userid="@u.Id" data-useremail="@u.Email">
+                                                <i class="fa-solid fa-key me-1"></i> Reset Password
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+
+            <!-- Reset Password Modal -->
+            <div class="modal fade" id="resetPwdModal" tabindex="-1" aria-labelledby="resetPwdModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form asp-action="ResetPassword" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" id="resetUserId" />
+                            
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="resetPwdModalLabel">Reset User Password</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Target User</label>
+                                    <input type="text" class="form-control" id="resetUserEmail" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">New Password</label>
+                                    <input type="password" name="newPassword" class="form-control" placeholder="Enter new secure password" required />
+                                    <div class="form-text small">Minimum 6 characters, must include digit, lowercase, and uppercase letters.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fa-solid fa-save me-1"></i> Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            @section Scripts {
+                <script>
+                    $(document).ready(function () {
+                        // Populate user modal details
+                        $('.btn-reset-pwd').on('click', function () {
+                            var userId = $(this).data('userid');
+                            var userEmail = $(this).data('useremail');
+                            $('#resetUserId').val(userId);
+                            $('#resetUserEmail').val(userEmail);
+                        });
+                    });
+                </script>
+            }
+        </div>
+    </div>
+</div>

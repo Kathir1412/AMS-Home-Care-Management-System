@@ -1,0 +1,104 @@
+@model IEnumerable<AmsHomeCare.Core.Entities.DutyAssignment>
+@{
+    ViewData["Title"] = "Duty Assignments";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Duty Assignments Scheduler</h2>
+            <p class="text-muted">Schedule and assign care providers to patients with specific shifts.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa-solid fa-plus me-2"></i> Assign Duty
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card card-main">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="dutyTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Assigned Patient</th>
+                        <th>Shift</th>
+                        <th>Shift Hours</th>
+                        <th>Date Range</th>
+                        <th>Notes</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var assignment in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold text-dark">@assignment.Employee?.Name</div>
+                                <span class="badge bg-light text-dark border">@assignment.Employee?.Role</span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">@assignment.Patient?.PatientName</div>
+                                <small class="text-muted">ID: #PAT-@assignment.PatientId.ToString("D3")</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">@assignment.Shift?.ShiftName</span>
+                            </td>
+                            <td>
+                                @assignment.Shift?.StartTime.ToString(@"hh\:mm") - @assignment.Shift?.EndTime.ToString(@"hh\:mm")
+                            </td>
+                            <td>
+                                <div class="small">
+                                    <span class="text-success"><i class="fa-solid fa-play me-1"></i> @assignment.StartDate.ToString("dd-MMM-yyyy")</span>
+                                    <br>
+                                    <span class="text-danger"><i class="fa-solid fa-stop me-1"></i> @assignment.EndDate.ToString("dd-MMM-yyyy")</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-wrap d-inline-block small" style="max-width: 200px;">@assignment.SupervisorNotes</span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@assignment.Id" class="btn btn-sm btn-outline-warning me-1">
+                                    <i class="fa-solid fa-pen-to-square"></i> Reassign
+                                </a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <form asp-action="Delete" asp-route-id="@assignment.Id" method="post" onsubmit="return confirm('Are you sure you want to cancel this duty assignment?');" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa-solid fa-trash"></i> Cancel
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dutyTable').DataTable({
+                responsive: true,
+                order: [[4, 'desc']], // Order by Date Range Start
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search records..."
+                }
+            });
+        });
+    </script>
+}

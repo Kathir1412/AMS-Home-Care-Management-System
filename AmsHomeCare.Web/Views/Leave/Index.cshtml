@@ -1,0 +1,115 @@
+@model IEnumerable<AmsHomeCare.Core.Entities.Leave>
+@{
+    ViewData["Title"] = "Leave Management";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Leave Requests</h2>
+            <p class="text-muted">Review, approve, and track employee leave requests.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa-solid fa-plus me-2"></i> Apply Leave
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card card-main">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="leaveTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Days</th>
+                        <th>Remarks</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var leave in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold text-dark">@leave.Employee?.Name</div>
+                                <small class="text-muted">Code: @leave.Employee?.EmployeeCode</small>
+                            </td>
+                            <td><span class="badge bg-secondary">@leave.LeaveType</span></td>
+                            <td>@leave.StartDate.ToString("dd-MMM-yyyy")</td>
+                            <td>@leave.EndDate.ToString("dd-MMM-yyyy")</td>
+                            <td>
+                                @((leave.EndDate.Date - leave.StartDate.Date).TotalDays + 1)
+                            </td>
+                            <td>
+                                <span class="text-wrap d-inline-block small" style="max-width: 250px;">@leave.Remarks</span>
+                            </td>
+                            <td>
+                                @if (leave.Status == AmsHomeCare.Core.Enums.LeaveStatus.Approved)
+                                {
+                                    <span class="badge badge-active">Approved</span>
+                                }
+                                else if (leave.Status == AmsHomeCare.Core.Enums.LeaveStatus.Rejected)
+                                {
+                                    <span class="badge badge-inactive">Rejected</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (leave.Status == AmsHomeCare.Core.Enums.LeaveStatus.Pending)
+                                {
+                                    <form asp-action="Approve" asp-route-id="@leave.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success me-1">
+                                            <i class="fa-solid fa-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form asp-action="Reject" asp-route-id="@leave.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-xmark"></i> Reject
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Decided</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#leaveTable').DataTable({
+                responsive: true,
+                order: [[2, 'desc']], // Order by Start Date
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search leaves..."
+                }
+            });
+        });
+    </script>
+}

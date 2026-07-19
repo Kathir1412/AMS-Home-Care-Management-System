@@ -1,0 +1,179 @@
+@using Microsoft.AspNetCore.Identity
+@using AmsHomeCare.Infrastructure.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AMS Home Care</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
+    
+    <!-- Custom site.css -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <script>
+        // Apply theme immediately to avoid white flash on load
+        var currentTheme = localStorage.getItem('theme') || 'theme-light';
+        document.body.className = currentTheme;
+    </script>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h4>AMS Home Care</h4>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="fa-solid fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">
+                        <a asp-controller="Employee" asp-action="Index">
+                            <i class="fa-solid fa-user-nurse"></i> Employees
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Patient" ? "active" : "")">
+                        <a asp-controller="Patient" asp-action="Index">
+                            <i class="fa-solid fa-hospital-user"></i> Patients
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Shift" ? "active" : "")">
+                        <a asp-controller="Shift" asp-action="Index">
+                            <i class="fa-solid fa-clock"></i> Shifts
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Duty" ? "active" : "")">
+                        <a asp-controller="Duty" asp-action="Index">
+                            <i class="fa-solid fa-calendar-check"></i> Duty Assignments
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Attendance" ? "active" : "")">
+                        <a asp-controller="Attendance" asp-action="Index">
+                            <i class="fa-solid fa-clipboard-user"></i> Attendance
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Leave" ? "active" : "")">
+                        <a asp-controller="Leave" asp-action="Index">
+                            <i class="fa-solid fa-calendar-minus"></i> Leave requests
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" ? "active" : "")">
+                        <a asp-controller="Report" asp-action="Index">
+                            <i class="fa-solid fa-file-invoice"></i> Reports
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
+                            <a asp-controller="Settings" asp-action="Index">
+                                <i class="fa-solid fa-gears"></i> Settings
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <div class="p-3 border-top border-secondary text-center">
+                    <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <div class="topbar">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" id="sidebarCollapse" class="btn btn-light border">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <select id="themeSelector" class="form-select form-select-sm border" style="width: auto; font-size: 0.85rem;">
+                            <option value="theme-light">Light Medical</option>
+                            <option value="theme-dark">Dark Clinical</option>
+                            <option value="theme-classic">Classic Teal</option>
+                        </select>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="text-end me-2 d-none d-sm-block">
+                            <div class="fw-bold">@UserManager.GetUserAsync(User).Result?.FullName</div>
+                            <small class="text-muted">@(User.IsInRole("Admin") ? "Administrator" : "Supervisor")</small>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=@(UserManager.GetUserName(User))&background=38bdf8&color=fff" alt="User Avatar" />
+                    </div>
+                </div>
+
+                <!-- Main Section -->
+                <main role="main" class="container-fluid p-0">
+                    @RenderBody()
+                </main>
+
+                <!-- Footer -->
+                <footer>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 text-muted">
+                                &copy; @DateTime.Now.Year - AMS Home Care - Attendance Management System
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    }
+    else
+    {
+        <main role="main" class="w-100">
+            @RenderBody()
+        </main>
+    }
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    
+    <!-- Custom site.js -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            // Bind theme dropdown change
+            $('#themeSelector').val(localStorage.getItem('theme') || 'theme-light');
+            $('#themeSelector').on('change', function () {
+                var selected = $(this).val();
+                $('body').removeClass('theme-light theme-dark theme-classic').addClass(selected);
+                localStorage.setItem('theme', selected);
+            });
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+</html>
